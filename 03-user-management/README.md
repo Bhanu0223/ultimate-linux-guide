@@ -27,6 +27,10 @@ To specify a shell:
 ```bash
 useradd -s /bin/bash username
 ```
+To specify non-interactive shell:
+```
+useradd -s /sbin/nologin kirsty
+```
 
 ### `adduser` Command (For Debian-based systems)
 ```bash
