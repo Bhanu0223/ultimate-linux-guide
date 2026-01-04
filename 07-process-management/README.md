@@ -40,6 +40,8 @@ A process is an instance of a running program. Linux provides multiple utilities
 - `systemctl start service-name` – Start a daemon/service
 - `systemctl stop service-name` – Stop a daemon/service
 - `systemctl enable service-name` – Enable a service at startup
+### Service and process difference
+A process is a running instance of a program, a generic term for any active computation, while a service (or daemon) is a special type of long-running background process designed to provide functionality (like a web server, database, or print spooler) without direct user interaction, often starting with the OS and managing other processes.
 
 ## Viewing Process Details
 ### Using `ps`
