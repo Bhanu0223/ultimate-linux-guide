@@ -1,0 +1,97 @@
+#Netfilter system which enables other kernel modules to offer: packet filtering, NAT and Load balancing
+# iptables cmd interacts with the Netfilter system to provide packet filtering and NAT
+# The iptables tool is used by services to manage firewall rules.
+# linux comes with two such services:
+    1. firewalld daemon
+    2. iptables services
+
+
+🔹 What is iptables?
+iptables is a Linux firewall used to allow, block, or modify network traffic.
+
+🔹 Tables (What kind of rule?)
+Table	Purpose
+filter	Default – allow/deny traffic
+nat	Network Address Translation
+mangle	Modify packets
+raw	Connection tracking exemptions
+👉 Default table = filter
+
+🔹 Chains (Where rule applies?)
+Chain	Meaning
+INPUT	Incoming traffic
+OUTPUT	Outgoing traffic
+FORWARD	Traffic passing through server
+PREROUTING	Before routing decision
+POSTROUTING	After routing decision
+
+🔹 Basic Syntax
+iptables -t <table> -A <chain> <conditions> -j <action>
+
+🔹 Common Actions (-j)
+Action	Description
+ACCEPT	Allow traffic
+DROP	Block silently
+REJECT	Block + send error
+LOG	Log packets
+DNAT	Destination NAT
+SNAT	Source NAT
+MASQUERADE	Dynamic SNAT
+
+
+🔹 View Rules
+iptables -L                 # List rules
+iptables -L -v              # Verbose
+iptables -L -n              # No DNS lookup
+iptables -L --line-numbers  # Show rule numbers
+
+🔹 Allow Rules
+Allow SSH (Port 22)
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+Allow HTTP & HTTPS
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+Allow Loopback
+iptables -A INPUT -i lo -j ACCEPT
+
+🔹 Block Rules
+Block an IP
+iptables -A INPUT -s 192.168.1.10 -j DROP
+Block a Port
+iptables -A INPUT -p tcp --dport 21 -j DROP
+
+🔹 Default Policy (Very Important)
+iptables -P INPUT DROP
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD DROP
+⚠️ Always allow SSH before setting INPUT DROP!
+
+🔹 Stateful Firewall (Best Practice)
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+🔹 NAT Rules
+Enable IP Forwarding
+echo 1 > /proc/sys/net/ipv4/ip_forward
+MASQUERADE (Internet sharing)
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+Port Forwarding
+iptables -t nat -A PREROUTING -p tcp --dport 8080 -j DNAT --to 192.168.1.10:80
+
+🔹 Delete Rules
+Delete by Rule Number
+iptables -D INPUT 2
+Flush All Rules
+iptables -F
+iptables -t nat -F
+
+🔹 Save & Restore Rules
+Save
+iptables-save > /etc/iptables.rules
+Restore
+iptables-restore < /etc/iptables.rules
+
+🔹 Logging
+iptables -A INPUT -p tcp --dport 22 -j LOG --log-prefix "SSH Attempt: "
+Check logs:
+/var/log/messages
+/var/log/syslog
