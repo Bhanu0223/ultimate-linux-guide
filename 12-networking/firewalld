@@ -1,0 +1,105 @@
+Here’s a compact and practical firewalld cheat sheet (useful for Linux admins / DevOps) 🔥🧱
+
+🔹 Service Management
+systemctl start firewalld
+systemctl stop firewalld
+systemctl restart firewalld
+systemctl reload firewalld
+systemctl enable firewalld
+systemctl disable firewalld
+systemctl status firewalld
+
+🔹 Check Firewall Status
+firewall-cmd --state
+firewall-cmd --get-active-zones
+firewall-cmd --list-all
+
+🔹 Zones
+firewall-cmd --get-zones
+firewall-cmd --get-default-zone
+firewall-cmd --set-default-zone=public
+
+
+Assign interface to zone:
+
+firewall-cmd --zone=public --add-interface=eth0
+
+🔹 Services
+
+List available services:
+
+firewall-cmd --get-services
+
+
+Allow a service:
+
+firewall-cmd --add-service=http
+firewall-cmd --add-service=https --permanent
+
+
+Remove a service:
+
+firewall-cmd --remove-service=http
+
+🔹 Ports
+
+Open port:
+
+firewall-cmd --add-port=80/tcp
+firewall-cmd --add-port=3306/tcp --permanent
+
+
+Remove port:
+
+firewall-cmd --remove-port=80/tcp
+
+
+List ports:
+
+firewall-cmd --list-ports
+
+🔹 Rich Rules (Advanced)
+
+Allow specific IP:
+
+firewall-cmd --add-rich-rule='rule family="ipv4" source address="192.168.1.10" accept'
+
+
+Allow port from IP:
+
+firewall-cmd --add-rich-rule='rule family="ipv4" source address="10.0.0.5" port port="22" protocol="tcp" accept'
+
+
+Remove rich rule:
+
+firewall-cmd --remove-rich-rule='RULE_HERE'
+
+🔹 Permanent vs Runtime
+
+Runtime (default) → lost after reboot
+
+Permanent → survives reboot
+
+Apply permanent changes:
+
+firewall-cmd --reload
+
+🔹 Masquerading (NAT)
+firewall-cmd --add-masquerade
+firewall-cmd --add-masquerade --permanent
+
+🔹 Forwarding
+firewall-cmd --add-forward-port=port=80:proto=tcp:toport=8080
+
+🔹 Remove Everything (Zone Reset)
+firewall-cmd --zone=public --remove-service=http
+firewall-cmd --zone=public --remove-port=80/tcp
+
+🔹 Debugging
+firewall-cmd --list-all
+firewall-cmd --list-services
+firewall-cmd --list-rich-rules
+
+🔹 Quick Example (Open HTTP Permanently)
+firewall-cmd --add-service=http --permanent
+firewall-cmd --reload
