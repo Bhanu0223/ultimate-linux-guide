@@ -10,6 +10,11 @@ ssh-keygen -t rsa -b 2048
   ssh-copy-id tony@app_server_1
   ```
   Enter tony’s password when prompted.
+
+# above two steps into single command
+```bash
+ssh-keygen -t rsa -b 2048 -N "" -f ~/.ssh/id_rsa
+```
 # Check permissions
 ```bash
 chmod 700 ~/.ssh
