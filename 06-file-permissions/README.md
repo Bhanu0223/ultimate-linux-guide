@@ -99,3 +99,83 @@ umask 022  # Default: 755 for directories, 644 for files
 
 ## Conclusion
 Understanding file permissions is essential for system security and proper file management. Using `chmod`, `chown`, and `chgrp`, you can control access to files and directories efficiently.
+
+
+
+
+These terms come from Linux ACL (Access Control Lists), which give you more fine-grained permissions than the normal owner / group / others model.
+
+Normally a file has:
+
+owner   group   others
+  rwx     rwx      rwx
+
+
+ACL lets you say things like:
+
+“Give this specific user read access”
+
+“Give that specific group write access”
+
+In Ansible, the acl module uses these fields:
+
+🔹 entity
+
+This is who you are giving permissions to.
+
+Examples:
+
+entity: tony → refers to user or group named tony
+
+entity: steve
+
+entity: banner
+
+🔹 etype
+
+This tells Ansible what kind of entity it is:
+
+etype: user → the entity is a user
+
+etype: group → the entity is a group
+
+So:
+
+entity: steve
+etype: user
+
+
+means: “Apply this ACL to the user steve”
+
+and:
+
+entity: tony
+etype: group
+
+
+means: “Apply this ACL to the group tony”
+
+🔹 acl (Access Control List)
+
+ACL is the mechanism that stores these extra permissions on a file.
+
+Example task:
+
+acl:
+  path: /opt/devops/story.txt
+  entity: steve
+  etype: user
+  permissions: rw
+  state: present
+
+
+This translates to:
+
+“On /opt/devops/story.txt, give the user steve read and write (rw) permissions using ACL.”
+
+You can see ACLs on a system with:
+
+getfacl /opt/devops/story.txt
+
+
+That’s all these terms mean—ACL just extends Linux permissions beyond the basic owner/group/others model.
